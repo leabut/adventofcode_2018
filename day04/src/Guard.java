@@ -1,10 +1,5 @@
 public class Guard {
 	int id = 0;
-	int posX = 0;
-	int posY = 0;
-	int width = 0;
-	int height = 0;
-
 	int[] sleepTimeHist = new int[60];
 
 	public Guard(int id) {
@@ -17,7 +12,18 @@ public class Guard {
 		}
 	}
 
-	public int getMostCommon() {
+	public int getMostMinutes() {
+		int count = 0;
+		for (int i = 0; i < sleepTimeHist.length; i++) {
+			if (sleepTimeHist[i] > 0) {
+				count += sleepTimeHist[i];
+			}
+		}
+
+		return count;
+	}
+
+	public int[] getMostCommon() {
 		int max = -1;
 		int maxPos = 0;
 		for (int i = 0; i < sleepTimeHist.length; i++) {
@@ -26,6 +32,7 @@ public class Guard {
 				maxPos = i;
 			}
 		}
-		return maxPos;
+		int[] res = { max, maxPos };
+		return res;
 	}
 }
