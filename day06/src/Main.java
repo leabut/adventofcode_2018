@@ -34,10 +34,7 @@ public class Main {
 
 		correctX = xMin;
 		correctY = yMin;
-
-		correctX = 0;
-		correctY = 0;
-
+		
 		for (int i = 0; i < allPoints.size(); i++) {
 			int newX = allPoints.get(i).getX() - correctX;
 			int newY = allPoints.get(i).getY() - correctY;
@@ -79,7 +76,7 @@ public class Main {
 						continue;
 					}
 					if (arr[k][m].dist == dist) {
-						arr[k][m].dist = 0;
+						//arr[k][m].dist = 0;
 						arr[k][m].id = -1;
 						continue;
 					}
