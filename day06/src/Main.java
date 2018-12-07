@@ -110,22 +110,41 @@ public class Main {
 		}
 
 		int max = -1;
-		int maxPos = 0;
 		for (int i = 0; i < fieldCount.length; i++) {
 			if (fieldCount[i] > max) {
 				max = fieldCount[i];
-				maxPos = i;
 			}
 		}
 
+		/* PRINT
 		for (int i = 0; i < arr.length; i++) {
 			for (int j = 0; j < arr[i].length; j++) {
 				System.out.print((char) (arr[i][j].id + 65));
 			}
 			System.out.println();
 		}
+		*/
 
 		System.out.println("res = " + max);
+		
+		
+		
+		
+		
+		int res2 = 0;		
+		for(int i = 0; i < arr.length; i++) {
+			for(int j = 0; j < arr[i].length; j++) {
+				int sum = 0;
+				for(int k = 0; k < allPoints.size(); k++) {
+					sum += manhattanDist(i, j, allPoints.get(k).getX(), allPoints.get(k).getY());
+				}
+				if(sum < 10000) {
+					res2++;
+				}
+			}
+		}
+		
+		System.out.println("res2 = " + res2);
 	}
 
 	public static int manhattanDist(int x, int y, int x2, int y2) {
