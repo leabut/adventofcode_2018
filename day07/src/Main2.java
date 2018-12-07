@@ -3,10 +3,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
 
-public class Main {
+public class Main2 {
 
 	static Vector<Depend> dependencies = new Vector<Depend>();
+	static Vector<Worker> workers = new Vector<Worker>();
 	static Vector<Character> order = new Vector<Character>();
+
+	static int totalTime = 0;
 
 	public static void main(String[] args) throws IOException {
 
@@ -46,39 +49,52 @@ public class Main {
 			after.before.add(before);
 		}
 
+		for (int i = 0; i < 5; i++) {
+			workers.add(new Worker());
+		}
+		
 		process();
 
 		for (int i = 0; i < order.size(); i++) {
 			System.out.print(order.get(i));
 		}
+		System.out.println();
+		
+		System.out.println(--totalTime);
 	}
 
 	public static void process() {
 		// find Depend with an empty before list
 		while (isOpen()) {
-					Depend tmp = getSmallestOpenDepend();
-					tmp.done = true;
-					order.add(tmp.id);
-					for (int j = 0; j < dependencies.size(); j++) {
-						dependencies.get(j).before.remove(tmp);
-					}
+			tick();
+			totalTime++;
+		}
+	}
+
+	public static void tick() {
+		for (int i = 0; i < workers.size(); i++) {
+			workers.get(i).work();
+		}
+
+		for (int i = 0; i < workers.size(); i++) {
+			workers.get(i).tryAssignWork(getSmallestOpenDepend());
 		}
 	}
 
 	public static Depend getSmallestOpenDepend() {
 		Depend tmp = null;
 		for (int i = 0; i < dependencies.size(); i++) {
-			if (dependencies.get(i).before.size() == 0 && dependencies.get(i).done == false) {
+			if (dependencies.get(i).before.size() == 0 && dependencies.get(i).done == false && dependencies.get(i).lockCount == -1) {
 				if (tmp == null) {
 					tmp = dependencies.get(i);
 					continue;
 				}
-				if(tmp.id > dependencies.get(i).id) {
+				if (tmp.id > dependencies.get(i).id) {
 					tmp = dependencies.get(i);
 				}
 			}
 		}
-		
+
 		return tmp;
 	}
 
