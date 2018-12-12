@@ -2,8 +2,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Main {
 
@@ -26,35 +24,42 @@ public class Main {
 
 			line = line.replace(" => #", "");
 			line = line.replace(" => .", "");
-			line = line.replace(".", "\\.");
 
 			ruleString.add(line);
 		}
 
-		for (int i = 0; i < 2; i++) {
+		System.out.println(0 + " : " + initialState);
+
+		for (int i = 0; i < 3; i++) {
 			initialState = "." + initialState + ".";
 		}
-
-		System.out.println(0 + " : " + initialState);
 		for (int j = 0; j < 20; j++) {
 			char[] tmp = new char[initialState.length()];
 			for (int i = 0; i < ruleString.size(); i++) {
-				Pattern pattern = Pattern.compile(ruleString.get(i));
-				Matcher matcher = pattern.matcher(initialState);
-
-				while (matcher.find()) {
-					int pos = matcher.start();
-					if (ruleBool.get(i)) {
-						tmp[pos + 2] = '#';
-					} else {
-						tmp[pos + 2] = '.';
+				for (int k = 0; k < tmp.length; k++) {
+					if (tmp.length - k < 5) {
+						break;
 					}
+					String substring = initialState.substring(k, k + 5);
+
+					if (substring.equals(ruleString.get(i))) {
+						int pos = k;
+						if (ruleBool.get(i)) {
+							tmp[pos + 2] = '#';
+						} else {
+							tmp[pos + 2] = '.';
+						}
+					}
+
+					// System.out.println(substring);
 				}
+
 			}
 
 			char[] arr = initialState.toCharArray();
 			for (int k = 0; k < tmp.length; k++) {
 				if (tmp[k] == '\0') {
+					arr[k] = '.';
 					continue;
 				}
 				arr[k] = tmp[k];
@@ -64,11 +69,12 @@ public class Main {
 
 			initialState = appendDots(initialState);
 
-			if (j <= 9) {
+			if (j + 1 <= 9) {
 				System.out.println((j + 1) + " : " + initialState);
 			} else {
 				System.out.println((j + 1) + ": " + initialState);
 			}
+
 		}
 
 		int sum = 0;
@@ -78,25 +84,33 @@ public class Main {
 			}
 		}
 
-		//3312
+		// 3312
 		System.out.println("res = " + sum);
+		
+		String stable = "#...#...#...#...#...#...#...#...#.####...#...#...#...#...#...#...#...#...#...#...#...#...#...#...#...#...#..####...#...#...#...#...#...#...#...#...#...#...#...#...#...#...#..####...";
+		char[] stableArr = stable.toCharArray();
+		//too great numbers, therefore doing in python
+		double imprecise = 50000000000.0d - 82.0d;
 
 	}
 
 	public static String appendDots(String initialState) {
 		char[] arr = initialState.toCharArray();
 
-		if (arr[0] != '.') {
-			initialState = "." + initialState;
-			initialState = "." + initialState;
-		} else if (arr[1] != '.') {
-			initialState = "." + initialState;
-		}
+		/*
+		 * if (arr[0] != '.') { initialState = "." + initialState; initialState = "." +
+		 * initialState; } else if (arr[1] != '.') { initialState = "." + initialState;
+		 * initialState = "." + initialState; } else if (arr[2] != '.') { initialState =
+		 * "." + initialState; }
+		 */
 
 		if (arr[arr.length - 1] != '.') {
 			initialState += ".";
 			initialState += ".";
 		} else if (arr[arr.length - 2] != '.') {
+			initialState += ".";
+			initialState += ".";
+		} else if (arr[arr.length - 3] != '.') {
 			initialState += ".";
 		}
 
