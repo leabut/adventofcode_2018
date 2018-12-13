@@ -36,12 +36,13 @@ public class Main {
 		boolean crashed = false;
 		Vector<Cart> tmpCartVec = new Vector<Cart>();
 
+		/*
 		while (!crashed) {
 			/*
 			System.out.println();
 			printMap();
 			System.out.println();
-			*/
+			/
 			
 			while(cartsVec.size() != 0) {
 				Cart tmpCart = getMinCart(cartsVec);
@@ -61,6 +62,36 @@ public class Main {
 		System.out.println();
 		printMap();
 		System.out.println();
+		*/
+		
+		tmpCartVec = new Vector<Cart>();
+		int counter = 0;
+		//while (cartsVec.size() != 1) {
+		for(int j = 0; j < 14048 - 1; j++) {
+			while(cartsVec.size() != 0) {
+				Cart tmpCart = getMinCart(cartsVec);
+				if(!tmpCart.crashed) {
+					tmpCart.tick();
+					tmpCartVec.add(tmpCart);
+				}
+				cartsVec.remove(tmpCart);
+			}
+			cartsVec = tmpCartVec;
+			tmpCartVec = new Vector<Cart>();
+			for (int i = 0; i < cartsVec.size(); i++) {
+				if (cartsVec.get(i).crashed) {
+					cartsVec.remove(cartsVec.get(i));
+				}
+			}
+			counter++;
+		}
+		
+		System.out.println();
+		printMap();
+		System.out.println();
+		
+		System.out.println("X = " + cartsVec.get(0).Y + ", Y = " + cartsVec.get(0).X);
+		System.out.println(counter);
 	}
 
 	static Cart getMinCart(Vector<Cart> cartsVec) {

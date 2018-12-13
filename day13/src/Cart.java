@@ -3,6 +3,7 @@ public class Cart {
 	int Y = 0;
 	boolean crashed = false;
 	char oldCurve = '\0';
+	char oldChar = '\0';
 
 	enum Direction {
 		LEFT, UP, RIGHT, DOWN, STRAIGHT
@@ -16,7 +17,7 @@ public class Cart {
 	}
 
 	void tick() {
-		boolean restoreCurve = oldCurve != '\0';
+		
 		char tmpCurve = '\0';
 
 		char arrow = Main.charArr[X][Y];
@@ -30,8 +31,10 @@ public class Cart {
 			newX = X;
 			newY = Y - 1;
 			Main.charArr[X][Y] = '-';
+			oldChar = '-';
 			if (isArrowElement(Main.charArr[newX][newY])) {
 				this.crashed = true;
+				tmpCurve = Main.charArr[newX][newY];
 				Main.charArr[newX][newY] = 'X';
 			} else if (isCurve(Main.charArr[newX][newY])) {
 				tmpCurve = Main.charArr[newX][newY];
@@ -50,8 +53,10 @@ public class Cart {
 			newX = X - 1;
 			newY = Y;
 			Main.charArr[X][Y] = '|';
+			oldChar = '|';
 			if (isArrowElement(Main.charArr[newX][newY])) {
 				this.crashed = true;
+				tmpCurve = Main.charArr[newX][newY];
 				Main.charArr[newX][newY] = 'X';
 			} else if (isCurve(Main.charArr[newX][newY])) {
 				tmpCurve = Main.charArr[newX][newY];
@@ -70,8 +75,10 @@ public class Cart {
 			newX = X;
 			newY = Y + 1;
 			Main.charArr[X][Y] = '-';
+			oldChar = '-';
 			if (isArrowElement(Main.charArr[newX][newY])) {
 				this.crashed = true;
+				tmpCurve = Main.charArr[newX][newY];
 				Main.charArr[newX][newY] = 'X';
 			} else if (isCurve(Main.charArr[newX][newY])) {
 				tmpCurve = Main.charArr[newX][newY];
@@ -90,8 +97,10 @@ public class Cart {
 			newX = X + 1;
 			newY = Y;
 			Main.charArr[X][Y] = '|';
+			oldChar = '|';
 			if (isArrowElement(Main.charArr[newX][newY])) {
 				this.crashed = true;
+				tmpCurve = Main.charArr[newX][newY];
 				Main.charArr[newX][newY] = 'X';
 			} else if (isCurve(Main.charArr[newX][newY])) {
 				tmpCurve = Main.charArr[newX][newY];
@@ -108,16 +117,19 @@ public class Cart {
 		case 'X':
 			this.crashed = true;
 			System.out.println("Y = " + X + ", X = " + Y);
-			return;
+			break;
 		default:
 			System.out.println("This should not happen 1");
 		}
 
-		if (restoreCurve) {
+		if (oldCurve != '\0') {
 			Main.charArr[X][Y] = oldCurve;
+		} else {
+			Main.charArr[X][Y] = oldChar;
 		}
-
+		
 		oldCurve = tmpCurve;
+		
 		X = newX;
 		Y = newY;
 	}
