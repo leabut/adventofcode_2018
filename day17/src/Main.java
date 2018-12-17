@@ -5,7 +5,7 @@ import java.util.Vector;
 
 public class Main {
 
-	static char[][] charArr = new char[14][20];
+	static char[][] charArr = new char[2000][2000];
 	static int lastLine = 0;
 
 	public static void main(String[] args) throws IOException {
@@ -25,10 +25,10 @@ public class Main {
 			}
 		}
 
-		// charArr[500][0] = '+'
-		// charArr[500][1] = '|'
-		charArr[5][0] = '+';
-		charArr[5][1] = '|';
+		charArr[500][0] = '+';
+		charArr[500][1] = '|';
+		//charArr[5][0] = '+';
+		//charArr[5][1] = '|';
 
 		for (int i = 0; i < allLines.size(); i++) {
 			boolean isXDyn = false;
@@ -71,15 +71,57 @@ public class Main {
 
 		while (checkBounds()) {
 			tick();
-			printMap();
-			System.out.println("---------------------------------");
+			//printMap();
+			//System.out.println("---------------------------------");
 		}
+		
+		printMap();
+		
+		int sum = 0;
+		int max = findMax();
+		for(int i = 0; i <= max; i++) {
+			for(int j = 0; j < charArr.length; j++) {
+				if(charArr[j][i] == '|' || charArr[j][i] == '~') {
+					sum++;
+				}
+			}
+		}
+		
+		System.out.println("res = " + sum);
+		
+		sum = 0;
+		for(int i = 0; i <= max; i++) {
+			for(int j = 0; j < charArr.length; j++) {
+				if(charArr[j][i] == '~') {
+					sum++;
+				}
+			}
+		}
+		
+		System.out.println("res2 = " + sum);
 
+	}
+	
+	static int findMax() {
+		int max = -1;
+		for(int i = 0; i < charArr[0].length; i++) {
+			for(int j = 0; j < charArr.length; j++) {
+				if(charArr[j][i] == '#') {
+					if(i > max) {
+						max = i;
+					}
+				}
+			}
+		}
+		return max;
 	}
 
 	static void tick() {
+		int tmp = lastLine;
 		fallWater();
-		lastLine++;
+		if(tmp == lastLine) {
+			lastLine++;
+		}		
 	}
 
 	static void fallWater() {
@@ -89,7 +131,6 @@ public class Main {
 					charArr[i][lastLine + 1] = '|';
 				} else {
 					levelWater(i, lastLine);
-					break;
 				}
 			}
 		}
@@ -101,7 +142,7 @@ public class Main {
 			if (charArr[i][startY] == '#') {
 				break;
 			}
-			if (charArr[i + 1][startY + 1] == '.') {
+			if (charArr[i + 1][startY + 1] == '.' && charArr[i][startY] != '#') {
 				noBorders = true;
 			}
 		}
@@ -120,8 +161,10 @@ public class Main {
 				if (charArr[i][startY] == '#') {
 					break;
 				}
-				if (charArr[i - 1][startY + 1] != '.') {
+				if (charArr[i - 1][startY + 1] != '.' && charArr[i - 1][startY + 1] != '|') {
 					charArr[i][startY] = '|';
+				} else {
+					break;
 				}
 			}
 
@@ -129,8 +172,10 @@ public class Main {
 				if (charArr[i][startY] == '#') {
 					break;
 				}
-				if (charArr[i + 1][startY + 1] != '.') {
+				if (charArr[i + 1][startY + 1] != '.' && charArr[i + 1][startY + 1] != '|') {
 					charArr[i][startY] = '|';
+				} else {
+					break;
 				}
 			}
 			return;
@@ -154,7 +199,7 @@ public class Main {
 	}
 
 	static boolean checkBounds() {
-		if (lastLine >= charArr.length) {
+		if (lastLine+1 >= charArr.length) {
 			return false;
 		}
 		return true;
