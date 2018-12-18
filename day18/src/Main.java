@@ -3,9 +3,10 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Main {
-
-	static char[][] charArr = new char[10][10];
+	
+	static char[][] charArr = new char[50][50];
 	static char[][] charArrCopy = null;
+	static int resArr[] = new int[10000];
 
 	static int openCount = 0;
 	static int treeCount = 0;
@@ -13,20 +14,77 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		@SuppressWarnings("resource")
-		BufferedReader br = new BufferedReader(new FileReader("example.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("input.txt"));
 		String line;
 
 		for (int i = 0; ((line = br.readLine()) != null); i++) {
 			charArr[i] = line.toCharArray();
 		}
 
-		for (int i = 0; i < 10; i++) {
-			printMap();
-			charArrCopy = charArr.clone();
+		for (int i = 0; i < 10000; i++) {
+
+			charArrCopy = deepCopy(charArr);
 			tick();
-			charArr = charArrCopy;
-			System.out.println();
+			charArr = deepCopy(charArrCopy);
+			resArr[i] = result();
+
+			/*
+			 * printMap(); System.out.println();
+			 */
 		}
+
+		System.out.println("res = " + result());
+		
+		for(int i = 0; i < resArr.length; i++) {
+			System.out.println(resArr[i]);
+		}
+	}
+	
+	static boolean charArrEQ(char[][] a, char[][] b) {
+		boolean eq = true;
+		for(int i = 0; i < a.length; i++) {
+			for(int j = 0; j < a[i].length; j++) {
+				if(a[i][j] != b[i][j]) {
+					eq = false;
+					break;
+				}
+			}
+		}
+		
+		if(eq) {
+			System.out.println("ohhh yeah :-)");
+		}
+		
+		return eq;
+	}
+
+	static char[][] deepCopy(char[][] toCopy) {
+		char[][] copy = new char[toCopy.length][toCopy[0].length];
+
+		for (int i = 0; i < toCopy.length; i++) {
+			for (int j = 0; j < toCopy[i].length; j++) {
+				copy[i][j] = toCopy[i][j];
+			}
+		}
+
+		return copy;
+	}
+
+	static int result() {
+		int tree = 0;
+		int lumber = 0;
+		for (int i = 0; i < charArr.length; i++) {
+			for (int j = 0; j < charArr[i].length; j++) {
+				if (charArr[i][j] == '|') {
+					tree++;
+				}
+				if (charArr[i][j] == '#') {
+					lumber++;
+				}
+			}
+		}
+
+		return tree * lumber;
 	}
 
 	static void tick() {
