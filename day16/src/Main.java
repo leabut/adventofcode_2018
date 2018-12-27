@@ -21,9 +21,18 @@ public class Main {
 		String[] split = null;
 
 		int res = 0;
+
+		int newLineCount = 0;
+
 		while ((line = br.readLine()) != null) {
-			if (line == "\n") {
+			if (newLineCount > 2) {
+				break;
+			}
+			if (line.matches("")) {
+				newLineCount++;
 				continue;
+			} else {
+				newLineCount = 0;
 			}
 
 			split = null;
@@ -63,7 +72,116 @@ public class Main {
 		while (it.hasNext()) {
 			Map.Entry pair = (Map.Entry) it.next();
 			System.out.println(pair.getKey() + " = " + pair.getValue());
-			it.remove(); // avoids a ConcurrentModificationException
+		}
+
+		// initialize registers with 0
+		for (int i = 0; i < tmpRegister.length; i++) {
+			tmpRegister[i] = 0;
+		}
+		// parse opcode
+		while ((line = br.readLine()) != null) {
+			if(line.matches("")) {
+				continue;
+			}
+			execCode(line);
+		}
+		
+		System.out.print("Register content\n[");
+		for(int i = 0; i < tmpRegister.length; i++) {
+		System.out.print(tmpRegister[i] + " , ");
+		}
+		System.out.print("]\n");
+	}
+
+	static void execCode(String cmd) {
+		String[] split = cmd.split(" ");
+		int id = Integer.parseInt(split[0]);
+		String opcode = idToOpcode.get(id);
+
+		switch (opcode) {
+		case "seti":
+			tmpRegister[Integer.parseInt(split[3])] = Integer.parseInt(split[1]);
+			break;
+
+		case "setr":
+			tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])];
+			break;
+		case "addi":
+			tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])]
+					+ Integer.parseInt(split[2]);
+			break;
+		case "addr":
+			tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])]
+					+ tmpRegister[Integer.parseInt(split[2])];
+			break;
+		case "muli":
+			tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])]
+					* Integer.parseInt(split[2]);
+			break;
+		case "mulr":
+			tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])]
+					* tmpRegister[Integer.parseInt(split[2])];
+			break;
+		case "bani":
+			tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])]
+					& Integer.parseInt(split[2]);
+			break;
+		case "banr":
+			tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])]
+					& tmpRegister[Integer.parseInt(split[2])];
+			break;
+		case "bori":
+			tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])]
+					| Integer.parseInt(split[2]);
+			break;
+		case "borr":
+			tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])]
+					| tmpRegister[Integer.parseInt(split[2])];
+			break;
+		case "gtir":
+			if (Integer.parseInt(split[1]) > tmpRegister[Integer.parseInt(split[2])]) {
+				tmpRegister[Integer.parseInt(split[3])] = 1;
+			} else {
+				tmpRegister[Integer.parseInt(split[3])] = 0;
+			}
+			break;
+		case "gtri":
+			if (tmpRegister[Integer.parseInt(split[1])] > Integer.parseInt(split[2])) {
+				tmpRegister[Integer.parseInt(split[3])] = 1;
+			} else {
+				tmpRegister[Integer.parseInt(split[3])] = 0;
+			}
+			break;
+		case "gtrr":
+			if (tmpRegister[Integer.parseInt(split[1])] > tmpRegister[Integer.parseInt(split[2])]) {
+				tmpRegister[Integer.parseInt(split[3])] = 1;
+			} else {
+				tmpRegister[Integer.parseInt(split[3])] = 0;
+			}
+			break;
+		case "eqir":
+			if (Integer.parseInt(split[1]) == tmpRegister[Integer.parseInt(split[2])]) {
+				tmpRegister[Integer.parseInt(split[3])] = 1;
+			} else {
+				tmpRegister[Integer.parseInt(split[3])] = 0;
+			}
+			break;
+		case "eqri":
+			if (tmpRegister[Integer.parseInt(split[1])] == Integer.parseInt(split[2])) {
+				tmpRegister[Integer.parseInt(split[3])] = 1;
+			} else {
+				tmpRegister[Integer.parseInt(split[3])] = 0;
+			}
+			break;
+		case "eqrr":
+			if (tmpRegister[Integer.parseInt(split[1])] == tmpRegister[Integer.parseInt(split[2])]) {
+				tmpRegister[Integer.parseInt(split[3])] = 1;
+			} else {
+				tmpRegister[Integer.parseInt(split[3])] = 0;
+			}
+			break;
+		default:
+			System.out.println("This should not happen!");
 		}
 	}
 
@@ -84,66 +202,66 @@ public class Main {
 
 		// case "seti":
 		tmpRegister[Integer.parseInt(split[3])] = Integer.parseInt(split[1]);
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("seti")) {
 			opcode = "seti";
 			counter++;
 		}
 
 		// case "setr":
 		tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])];
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("setr")) {
 			opcode = "setr";
 			counter++;
 		}
 		// case "addi":
 		tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])] + Integer.parseInt(split[2]);
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("addi")) {
 			opcode = "addi";
 			counter++;
 		}
 		// case "addr":
 		tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])]
 				+ tmpRegister[Integer.parseInt(split[2])];
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("addr")) {
 			opcode = "addr";
 			counter++;
 		}
 		// case "muli":
 		tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])] * Integer.parseInt(split[2]);
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("muli")) {
 			opcode = "muli";
 			counter++;
 		}
 		// case "mulr":
 		tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])]
 				* tmpRegister[Integer.parseInt(split[2])];
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("mulr")) {
 			opcode = "mulr";
 			counter++;
 		}
 		// case "bani":
 		tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])] & Integer.parseInt(split[2]);
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("bani")) {
 			opcode = "bani";
 			counter++;
 		}
 		// case "banr":
 		tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])]
 				& tmpRegister[Integer.parseInt(split[2])];
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("banr")) {
 			opcode = "banr";
 			counter++;
 		}
 		// case "bori":
 		tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])] | Integer.parseInt(split[2]);
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("bori")) {
 			opcode = "bori";
 			counter++;
 		}
 		// case "borr":
 		tmpRegister[Integer.parseInt(split[3])] = tmpRegister[Integer.parseInt(split[1])]
 				| tmpRegister[Integer.parseInt(split[2])];
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("borr")) {
 			opcode = "borr";
 			counter++;
 		}
@@ -153,7 +271,7 @@ public class Main {
 		} else {
 			tmpRegister[Integer.parseInt(split[3])] = 0;
 		}
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("gtir")) {
 			opcode = "gtir";
 			counter++;
 		}
@@ -163,7 +281,7 @@ public class Main {
 		} else {
 			tmpRegister[Integer.parseInt(split[3])] = 0;
 		}
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("gtri")) {
 			opcode = "gtri";
 			counter++;
 		}
@@ -173,7 +291,7 @@ public class Main {
 		} else {
 			tmpRegister[Integer.parseInt(split[3])] = 0;
 		}
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("gtrr")) {
 			opcode = "gtrr";
 			counter++;
 		}
@@ -183,7 +301,7 @@ public class Main {
 		} else {
 			tmpRegister[Integer.parseInt(split[3])] = 0;
 		}
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("eqir")) {
 			opcode = "eqir";
 			counter++;
 		}
@@ -193,7 +311,7 @@ public class Main {
 		} else {
 			tmpRegister[Integer.parseInt(split[3])] = 0;
 		}
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("eqri")) {
 			opcode = "eqri";
 			counter++;
 		}
@@ -203,13 +321,12 @@ public class Main {
 		} else {
 			tmpRegister[Integer.parseInt(split[3])] = 0;
 		}
-		if (testArrEq() && !idToOpcode.containsKey(id)) {
+		if (testArrEq() && !idToOpcode.containsValue("eqrr")) {
 			opcode = "eqrr";
 			counter++;
 		}
 
 		if (counter == 1) {
-			System.out.println("yes");
 			idToOpcode.put(id, opcode);
 		}
 	}
