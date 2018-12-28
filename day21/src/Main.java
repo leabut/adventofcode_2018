@@ -26,6 +26,11 @@ public class Main {
 			execute();
 			pointer = registers[4];
 			pointer++;
+			System.out.println(pointer);
+			for (int i = 0; i < registers.length; i++) {
+				System.out.print(registers[i] + " ");
+			}
+			System.out.println();
 		}
 
 		for (int i = 0; i < registers.length; i++) {
@@ -117,5 +122,62 @@ public class Main {
 		default:
 			System.out.println("Should never happen");
 		}
+	}
+	
+	
+	static int reg0, reg1, reg2, reg3, reg4, reg5;
+	public static void untouchedMain(String[] args) {
+		reg1 = 123;
+		reg1 &= 456;
+
+		if (reg1 != 72) {
+			return;
+		}
+
+		//code line 5
+		reg1 = 0;
+		reg2 = reg1 | 65536;
+		reg1 = 8725355;
+		
+		//code line 8
+		reg5 = reg2 & 255;
+		reg1 += reg5;
+		reg1 &= 16777215;
+		reg1 *= 65899;
+		reg1 &= 16777215;
+
+		if (256 > reg2) {
+			reg5 = 1;
+			reg4 = 27;
+		} else {
+			reg5 = 0;
+			
+			//code line 18
+			reg3 = reg5 + 1;
+			reg3 *= 256;
+
+			if (reg3 > reg2) {
+				reg3 = 1;
+				reg4 = 25;
+			} else {
+				reg3 = 0;
+				reg5 += 1;
+				reg4 = 17;
+				
+				//code line 26
+				reg2 = reg5;
+				reg4 = 7;
+
+				if (reg1 == reg0) {
+					reg5 = 1;
+					return;
+				} else {
+					reg5 = 0;
+					//GOTO START
+					reg4 = 5;
+				}
+			}
+		}
+		System.out.println("end of code");
 	}
 }
